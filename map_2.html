@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Folk to Folk Sample Map</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="css/folk_to_folk.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+   
+    <link rel="stylesheet" href="fonts/fonts.css" type="text/css" />
+    
+
+
+    <script type="text/javascript">
+
+    	var points, map, routes;
+    
+
+  	  function initialize() {
+  			map = new L.Map('map_canvas', {
+    center: [38.272689,-96.855469],
+    zoom: 5,
+    minZoom: 5,
+    maxZoom: 14
+});
+
+var mapboxUrl = 'http://{s}.tiles.mapbox.com/v3/folktofolk.folk-to-folk/{z}/{x}/{y}.png',
+        mapbox = new L.TileLayer(mapboxUrl, {minZoom: 5,maxZoom: 14});
+        map.addLayer(mapbox,true);
+              
+              
+
+    		var query="SELECT * FROM {{table_name}}";
+    		
+          
+          
+          
+        points = new L.CartoDBLayer({
+          map: map,
+          user_name:'folktofolk',
+          table_name: 'points',
+          query: query,
+          interactivity: "cartodb_id, pic, cities, stop_num, hover_text, band_1, description_1, video_1, band_2, description_2, video_2, band_3, description_3, video_3, band_4, description_4, video_4, band_5, video_5, description_5, photo_1",
+          featureOver: function(ev,latlng,pos,data) {
+            document.body.style.cursor = "pointer";
+            showTooltip(data,pos)
+          },
+       
+          featureOut: function() {
+            document.body.style.cursor = "default";
+            $("#tooltip").hide();
+            
+          },
+          featureClick: function(ev,latlng,pos,data) {
+          document.body.style.cursor = "pointer";
+            showVid(data,pos);
+            showPhoto(data,pos);
+             $("#tooltip").hide();
+              
+          },
+          auto_bound: false
+          
+        
+        });
+        
+        routes = new L.CartoDBLayer({
+          map: map,
+          user_name:'folktofolk',
+          table_name: 'routes',
+          query: query,
+          interactivity: "cartodb_id, description",
+          
+      });
+        
+        map.addLayer(points)
+        map.addLayer(routes)
+         
+    function showTooltip(data,point) {
+        var html = "";
+        html += "<h4>" + data.cities + "</h4>";
+        html += "<img src=" + data.pic + " height= '124' width='125'>";
+        html += "<p>" + data.hover_text + "</p>";
+        $("#tooltip").html(html);
+        $("#tooltip").css({left: (point.x + 5) + 'px', top: (point.y - 60) + 'px'})
+  $("#tooltip").fadeIn(1300);
+      }
+        
+      function showVid(data,point) {
+      $("#tooltip").hide();
+             var html = "";
+    html += "<header><tab>"+ data.cities + "</tab><button onclick=" + btnFunction() + ">Exit</button><br><br><br>";
+    html += "<popup><text>" + data.band_1 + "<p>" + data.description_1 + "</p></text>" + data.video_1 + "<br>";
+    
+
+       
+  if(data.video_2 !== "" && data.video_2 !== "0")
+        {
+         html += "<text>" + data.band_2 + "<p>" + data.description_2 + "</p></text>" + data.video_2 + "<br>";
+        }
+        
+    if(data.video_3 !== "" && data.video_3 !== "0")
+        {
+         html += "<text>" + data.band_3 + "<p>" + data.description_3 + "</p></text>" + data.video_3 + "<br>";
+        }
+        
+    if(data.video_4 !== "" && data.video_4 !== "0")
+        {
+         html += "<text>" + data.band_4 + "<p>" + data.description_3 + "</p></text>" + data.video_4 + "<br>";
+        }
+        
+     if(data.video_5 !== "" && data.video_5 !== "0")
+        {
+         html += "<text>" + data.band_5 + "<p>" + data.description_5 + "</p></text>" + data.video_5 + "<br></popup></header>";
+        }
+        
+    
+       
+      if(data.video_1 == "")
+        {
+        $("#vid").hide();
+        }
+        else {
+       
+        $("#vid").html(html);
+        $("#vid").css({left: 0, top: 0})
+        $("#vid").show();
+         $("#tooltip").hide();
+         $("#photo").hide();
+        }
+      }
+      
+ function showPhoto(data,point) {
+      $("#tooltip").hide();
+        var html = "";
+    html += "<header><tab>"+ data.cities + "</tab><button onclick=" + btnFunction() + ">Exit</button><br><br><br>";
+    html += "<popup>" + data.photo_1 + "<br></popup></header>";
+    
+    
+    
+ /*When all points have content, change back to "" from undefined*/ 	
+     if(data.photo_1 == undefined)
+        {
+        $("#photo").hide();
+        }
+        else {
+       
+        $("#photo").html(html);
+        $("#photo").css({left: 0, top: 0})
+        $("#photo").show();
+         $("#tooltip").hide();
+        }
+      }
+
+     $("#content2").hide();
+ 
+  	   $("#content").animate({
+    top:'30px',
+    opacity:'1'
+  },"slow");
+  
+  $("a.link_hide").click(function(){
+  $("#content").animate({top:'-90px'});
+  $("#content2").show(); 
+});
+$("a.link_show").click(function(){
+  $("#content").animate({top:'35px'});
+  $("#content2").hide();
+});
+   
+ function btnFunction()
+{
+document.onclick=function(){ 
+$("#vid").hide();
+$("#photo").hide();
+$("#tooltip").hide();
+};
+}
+      
+
+
+      
+  	  
+}  
+
+  </script>
+    
+  </head>
+  <body onload="initialize()">
+  <div id="map_canvas"></div>
+  
+    <div class="alert alert-info" id="vid">
+      <p>Vid</p>
+      </div> 
+    
+  <div class="alert alert-info" id="tooltip">
+      <p>Tooltip</p></div>
+      
+  <div class="alert alert-info" id="photo">
+  		<p>Photo</p></div>
+      
+    
+   
+     
+     <div id="content2">
+      <div id="l-contain2">
+     <div class="l-triangle-bottom2"></div>
+     <div id="left_menu2">
+          <a href="#" class="link_show">Show Menu</a>
+          </div>
+          </div>
+          </div>
+          
+          
+     <div id="content">
+
+     <div id="l-contain">
+     <div class="l-triangle-bottom"></div>
+     <div id="left_menu">
+          <a href="#" class="link_hide">Hide Menu</a>
+          </div>
+    
+          </div>
+          <div id="r-contain">
+        <div class="r-triangle-bottom"></div>
+          <div id="right_menu">
+          
+          <a href="http://folk-to-folk.com/about.html" target="_blank">About </a> <span class="divider">|</span> <a href="http://www.folktofolk.tumblr.com" target="_blank">Blog </a> <span class="divider">|</span> <a href="http://www.facebook.com/folktofolk" target="_blank"><img src="img/facebook.png" target="_blank" border="0" height="34" width="35" /></a>      <a href="http://www.twitter.com/folktofolk" target="_blank"><img src="img/twitter.png" target="_blank" border="0" height="34" width="35" /></a>
+          </div>
+          </div>
+          
+          <div id="banner-contain">
+           <div class="l-banner"><img src="img/banner_left"></div>
+            <div class="r-banner"><img src="img/banner_right"></div>
+          Folk to Folk
+             </div>
+        </div>
+    
+
+  	   <script src="js/leaflet.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script type="text/javascript" src="dist/cartodb-leaflet-min.js"></script>
+    <script type="text/javascript" src="dist/cartodb-popup-min.js"></script> 
+
+  </body>
+</html>

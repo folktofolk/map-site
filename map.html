@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Folk to Folk Sample Map</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="css/folk_to_folk.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+   
+    <link rel="stylesheet" href="fonts/fonts.css" type="text/css" />
+    
+
+
+    <script type="text/javascript">
+    	var points, map, routes;
+    
+
+  	  function initialize() {
+  			map = new L.Map('map_canvas').setView(new L.LatLng(38.272689,-96.855469), 4); 
+
+        var mapboxUrl = 'http://{s}.tiles.mapbox.com/v3/folktofolk.folk-to-folk/{z}/{x}/{y}.png',
+            mapbox = new L.TileLayer(mapboxUrl, {minZoom: 4,maxZoom: 17});
+        map.addLayer(mapbox,true);
+              
+              
+
+    		var query="SELECT * FROM {{table_name}}";
+    		
+          
+          
+          
+        points = new L.CartoDBLayer({
+          map: map,
+          user_name:'folktofolk',
+          table_name: 'points',
+          query: query,
+          interactivity: "cartodb_id, pic, cities, stop_num, hover_text, band_1, description_1, video_1, band_2, description_2, video_2, band_3, description_3, video_3, band_4, description_4, video_4, band_5, video_5, description_5",
+          featureOver: function(ev,latlng,pos,data) {
+            document.body.style.cursor = "pointer";
+            showTooltip(data,pos)
+          },
+       
+          featureOut: function() {
+            document.body.style.cursor = "default";
+            $("#tooltip").hide();
+            
+          },
+          featureClick: function(ev,latlng,pos,data) {
+          document.body.style.cursor = "pointer";
+            showVid(data,pos)
+             $("#tooltip").hide();
+              
+          },
+          auto_bound: false
+          
+        
+        });
+        
+        routes = new L.CartoDBLayer({
+          map: map,
+          user_name:'folktofolk',
+          table_name: 'routes',
+          query: query,
+          interactivity: "cartodb_id, description",
+          
+      });
+        
+        map.addLayer(points)
+        map.addLayer(routes)
+         
+    function showTooltip(data,point) {
+        var html = "";
+        html += "<h4>" + data.cities + "</h4>";
+        html += "<img src=" + data.pic + " height= '124' width='125'>";
+        html += "<p>" + data.hover_text + "</p>";
+        $("#tooltip").html(html);
+        $("#tooltip").css({left: (point.x + 5) + 'px', top: (point.y - 60) + 'px'})
+  $("#tooltip").fadeIn(1800);
+      }
+      
+      function showVid(data,point) {
+      $("#tooltip").hide();
+       var html = "";
+    html += "<header><tab>"+ data.cities + "</tab><button onclick=" + btnFunction() + ">Exit</button><br><br><br>";
+    html += "<popup><text>" + data.band_1 + "<p>" + data.description_1 + "</p></text>" + data.video_1 + "<br>";
+    
+       
+  if(data.video_2 !== "" && data.video_2 !== "0")
+        {
+         html += "<text>" + data.band_2 + "<p>" + data.description_2 + "</p></text>" + data.video_2 + "<br>";
+        }
+        
+    if(data.video_3 !== "" && data.video_3 !== "0")
+        {
+         html += "<text>" + data.band_3 + "<p>" + data.description_3 + "</p></text>" + data.video_3 + "<br>";
+        }
+        
+    if(data.video_4 !== "" && data.video_4 !== "0")
+        {
+         html += "<text>" + data.band_4 + "<p>" + data.description_3 + "</p></text>" + data.video_4 + "<br>";
+        }
+        
+     if(data.video_5 !== "" && data.video_5 !== "0")
+        {
+         html += "<text>" + data.band_5 + "<p>" + data.description_5 + "</p></text>" + data.video_5 + "<br></popup></header>";
+        }
+        
+    
+       
+      if(data.video_1 === "")
+        {
+        $("#vid").hide();
+        }
+        else {
+       
+        $("#vid").html(html);
+        $("#vid").css({left: 0, top: 0})
+        $("#vid").show();
+         $("#tooltip").hide();
+        }
+      }
+      
+      
+      
+ function btnFunction()
+{
+document.onclick=function(){ $("#vid").hide();
+$("#tooltip").hide();
+};
+
+}
+      
+
+
+      
+  	  
+}    </script>
+    
+  </head>
+  <body onload="initialize()">
+  <div id="map_canvas"></div>
+  
+    <div class="alert alert-info" id="vid">
+      <p>Vid</p>
+      </div> 
+    
+  <div class="alert alert-info" id="tooltip">
+      <p>Tooltip</p>
+      
+    </div>  
+    
+   
+     
+     
+     <div id="content">
+          <div class="title">
+          Folk to Folk
+            
+          </div>
+          
+             
+        </div>
+    
+
+ <script type="text/javascript">
+ $("#btn_title").hide();
+     function changeLayer(layer) {
+          if (layer=='All') {
+              points.setQuery("SELECT * FROM points");
+              routes.setQuery("SELECT * FROM routes");
+               $("#btn_title").hide();
+          } else if (layer=='Videos') {
+              points.setQuery("SELECT * FROM points WHERE points.route_id='1'");
+              routes.setQuery("SELECT * FROM routes WHERE routes.route_id='1'");
+              	var html = "";
+        html += "TRIP 1";
+        $("#btn_title").html(html);
+        $("#btn_title").show();
+          } else if (layer=='NA') {
+              points.setQuery("SELECT * FROM points WHERE points.route_id='2'");
+              routes.setQuery("SELECT * FROM routes WHERE routes.route_id='2'");
+              var html = "";
+        html += "TRIP 2";
+        $("#btn_title").html(html);
+        $("#btn_title").show();
+        
+          }  
+          
+  	  }
+  	  </script>
+  	   <script src="js/leaflet.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script type="text/javascript" src="dist/cartodb-leaflet-min.js"></script>
+    <script type="text/javascript" src="dist/cartodb-popup-min.js"></script> 
+
+  </body>
+</html>

@@ -1,0 +1,30 @@
+Cities,route_id,Address,Zip Code
+"Boston, MA",0,,
+"Baltimore, MD",1,,
+"Washington, DC",1,,
+"Charlottesville, VA",1,,
+"Blue Ridge Parkway, VA",1,,
+"Asheville, NC",1,,
+"Athens, GA",1,,
+"Gainesville, FL",1,"1800 NE 23rd Ave, Gainesville, FL 32609",32609
+"New Orleans, LA",1,"1801 NE 23rd Ave, Gainesville, FL 32609",32609
+"Tuscaloosa, AL",1,"1802 NE 23rd Ave, Gainesville, FL 32609",32609
+"Richmond, VA",1,"1803 NE 23rd Ave, Gainesville, FL 32609",32609
+"Buffalo, NY",2,"1804 NE 23rd Ave, Gainesville, FL 32609",32609
+"Columbus, OH",2,"1805 NE 23rd Ave, Gainesville, FL 32609",32609
+"Bloomington, IN",2,"1806 NE 23rd Ave, Gainesville, FL 32609",32609
+"Chicago, IL",2,"1807 NE 23rd Ave, Gainesville, FL 32609",32609
+"Lincoln, NE",2,"1808 NE 23rd Ave, Gainesville, FL 32609",32609
+"Denver, CO",2,"1809 NE 23rd Ave, Gainesville, FL 32609",32609
+"Moab, UT",2,"1810 NE 23rd Ave, Gainesville, FL 32609",32609
+"Reno, NV",2,"1811 NE 23rd Ave, Gainesville, FL 32609",32609
+"San Francisco/Oakland, CA",2,"1812 NE 23rd Ave, Gainesville, FL 32609",32609
+"Sonoma County, CA",2,"1813 NE 23rd Ave, Gainesville, FL 32609",32609
+"Portland, OR",2,"1814 NE 23rd Ave, Gainesville, FL 32609",32609
+"Seattle, WA",2,"1815 NE 23rd Ave, Gainesville, FL 32609",32609
+Yellowstone National Park,2,"1816 NE 23rd Ave, Gainesville, FL 32609",32609
+"Rapid City, SD",2,"1817 NE 23rd Ave, Gainesville, FL 32609",32609
+"Fairfield, IA",2,"1818 NE 23rd Ave, Gainesville, FL 32609",32609
+"Janesville, WI",2,"1819 NE 23rd Ave, Gainesville, FL 32609",32609
+"Chicago, IL",2,"1820 NE 23rd Ave, Gainesville, FL 32609",32609
+"Pittsburgh, PA, ",2,"1821 NE 23rd Ave, Gainesville, FL 32609",32609

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Folk to Folk</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <Meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+    <link href="css/folk_to_folk.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+   
+    <link rel="stylesheet" href="fonts/fonts.css" type="text/css" />
+    
+
+
+    <script type="text/javascript">
+
+
+ var points, map, routes;
+    
+
+      function initialize() {
+        var southWest = L.latLng(22.67631, -133.7348),
+            northEast = L.latLng(53.8914, -57.15754),
+            bounds = L.latLngBounds(southWest, northEast);
+        map = new L.Map('map_canvas', {
+              center: [41.9222,-98.358],
+              zoom: 1,
+              minZoom: 1,
+              maxZoom: 10,
+              maxBounds: bounds
+});
+
+var mapboxUrl = 'http://{s}.tiles.mapbox.com/v3/folktofolk.folk-to-folk/{z}/{x}/{y}.png',
+        mapbox = new L.TileLayer(mapboxUrl, {minZoom: 1,maxZoom: 14});
+        map.addLayer(mapbox,true);
+            
+        var query="SELECT * FROM {{table_name}}";
+
+        points = new L.CartoDBLayer({
+          map: map,
+          user_name:'folktofolk',
+          table_name: 'points',
+          query: query,
+          interactivity: "cartodb_id, pic, cities, stop_num, hover_text, band_1, description_1, video_1, band_2, description_2, video_2, band_3, description_3, video_3, band_4, description_4, video_4, band_5, video_5, description_5, photo_1",
+          featureOver: function(ev,latlng,pos,data) {
+            document.body.style.cursor = "pointer";
+            showTooltip(data,pos)
+          },
+       
+          featureOut: function() {
+            document.body.style.cursor = "default";
+            $("#tooltip").hide();
+            
+          },
+          featureClick: function(ev,latlng,pos,data) {
+          document.body.style.cursor = "pointer";
+            showVid(data,pos);
+            showPhoto(data,pos);
+             $("#tooltip").hide();
+              
+          },
+          auto_bound: false
+          
+        
+        });
+        
+        routes = new L.CartoDBLayer({
+          map: map,
+          user_name:'folktofolk',
+          table_name: 'routes',
+          query: query,
+          interactivity: "cartodb_id, description",
+          
+      });
+        
+        map.addLayer(points)
+        map.addLayer(routes)
+         
+    function showTooltip(data,point) {
+        var html = "";
+        html += "<h4>" + data.cities + "</h4>";
+        html += "<img src=" + data.pic + " height= '120em' width='130em'>";
+        html += "<p>" + data.hover_text + "</p>";
+        $("#tooltip").html(html);
+        $("#tooltip").css({left: (point.x + 5) + 'px', top: (point.y - 60) + 'px'})
+  $("#tooltip").fadeIn(900);
+      }
+        
+      function showVid(data,point) {
+      $("#tooltip").hide();
+             var html = "";
+    html += "<header><tab>"+ data.cities + "</tab><button onclick=" + btnFunction() + ">Exit</button><br><br><br>";
+    html += "<popup><text>" + data.band_1 + "<p>" + data.description_1 + "</p></text>" + data.video_1 + "<br>";
+    
+
+       
+  if(data.video_2 !== "" && data.video_2 !== "0")
+        {
+         html += "<text>" + data.band_2 + "<p>" + data.description_2 + "</p></text>" + data.video_2 + "<br>";
+        }
+        
+    if(data.video_3 !== "" && data.video_3 !== "0")
+        {
+         html += "<text>" + data.band_3 + "<p>" + data.description_3 + "</p></text>" + data.video_3 + "<br>";
+        }
+        
+    if(data.video_4 !== "" && data.video_4 !== "0")
+        {
+         html += "<text>" + data.band_4 + "<p>" + data.description_3 + "</p></text>" + data.video_4 + "<br>";
+        }
+        
+     if(data.video_5 !== "" && data.video_5 !== "0")
+        {
+         html += "<text>" + data.band_5 + "<p>" + data.description_5 + "</p></text>" + data.video_5 + "<br></popup></header>";
+        }
+        
+    
+       
+      if(data.video_1 == "")
+        {
+        $("#vid").hide();
+        }
+        else {
+       
+        $("#vid").html(html);
+        $("#vid").css({left: 0, top: 0})
+        $("#vid").show();
+         $("#tooltip").hide();
+         $("#photo").hide();
+        }
+      }
+      
+ function showPhoto(data,point) {
+      $("#tooltip").hide();
+        var html = "";
+    html += "<header><tab>"+ data.cities + "</tab><button onclick=" + btnFunction() + ">Exit</button><br><br><br>";
+    html += "<popup>" + data.photo_1 + "<br></popup></header>";
+    
+ /*When all points have content, change back to "" from undefined*/   
+     if(data.photo_1 == undefined)
+        {
+        $("#photo").hide();
+        }
+        else {
+       
+        $("#photo").html(html);
+        $("#photo").css({left: 0, top: 0})
+        $("#photo").show();
+         $("#tooltip").hide();
+        }
+      }
+
+     $("#content2").hide();
+ 
+       $("#content").animate({
+    top:'3em',
+    opacity:'1'
+  },"slow");
+  
+  $("a.link_hide").click(function(){
+  $("#content").animate({top:'-10em'});
+  $("#content2").show(); 
+});
+$("a.link_show").click(function(){
+  $("#content").animate({top:'3em'});
+  $("#content2").hide();
+});
+   
+ function btnFunction()
+{
+document.onclick=function(){ 
+$("#vid").hide();
+$("#photo").hide();
+$("#tooltip").hide();
+};
+}
+
+
+}  
+
+  </script>
+    
+  </head>
+  <body onload="initialize()">
+
+  <div id="mapbox" style="width: 100%; height: 100%">
+  <div id="map_canvas"></div>
+  
+    <div class="alert alert-info" id="vid">
+      <p>Vid</p>
+      </div> 
+    
+  <div class="alert alert-info" id="tooltip">
+      <p>Tooltip</p></div>
+      
+  <div class="alert alert-info" id="photo">
+      <p>Photo</p></div>
+  
+    
+   <div id="overlay">
+      <div>
+     <a onclick="document.getElementById('overlay').style.display='none'";
+      href="javascript:void(0)"</a><h2>[close]</h2>
+          </div>
+     <h1>Folk to Folk</h1>
+     <p>is an independent documentary project exploring how the inclusive spirit of folk music helps build communities and creates accessible, participatory spaces across America today. Through a combination of words, photography, audio recording, video, and online media, we've set out to explore different scenes across the country. We want to share what folk means to those who keep it alive, revive and reclaim it to fit their own personal and communal definitions.</p>
+     <p>Please get in touch with thoughts, ideas or recommendations for this project at <a href="mailto:folktofolk@gmail.com">folktofolk@gmail.com</a>. We value all participation and interaction.</p>
+     <h3>Who We Are</h3>
+     <p>We are a scrappy outfit comprised of three graduates of Boston University's journalism program who share a love for music, caffeine, multimedia storytelling, and spontaneous road trips. More specifically, we are...</p>
+
+<div id="container_a">
+<div id="container_1">
+<span onclick="$('#about_emma').toggle();" style="height:200px; cursor:pointer;"><div id="emma"><img src="img/emma.png"></div></span>
+<div id="about_emma" style="display: none;"><h3><a href="http://www.emmadessau.com" target="_blank">Emma Dessau</a></h3><p>Founder, editor, GPS,</p><p>autodidact, fluffer,</p><p>driver, web fumbler</p></div>
+<!--<div id="emma" class="shadow">
+  <div class="face_1">
+      <img src="img/emma.png"></div>
+  <div class="face-back_1">
+      <h3><a href="http://emmadessau.com/wp/about/">Emma Dessau</a></h3>
+          <p>founder, editor, director,</p>
+          <p>fluffer, autodidact,</p>
+          <p>route finder, bertha driver,</p>
+          <p>web fumbler</p>
+ </div>
+ </div>-->
+ </div>
+    
+<div id="container_2">
+<span onclick="$('#about_andrew').toggle();" style="height:200px; cursor:pointer;"><div id="andrew"><img src="img/andrew.png"></div></span>
+<div id="about_andrew" style="display: none; position: relative"><h3><a href="http://www.andrewmcfarland.net" target="_blank">Andrew McFarland</a></h3><p>Eyes, legs, steady hand,</p><p>driver, photographer,</p><p>cinematographer, editor</p></div>
+<!--<div id="andrew" class="shadow">
+  <div class="face_2">
+      <img src="img/andrew.png"></div>
+  <div class="face-back_2">
+      <h3><a href="http://andrewmcfarland.net/about/">Andrew McFarland</a></h3>
+          <p>eyes, legs, steady cam</p>
+          <p>flawless lighting</p>
+          <p>driving, photographer</p> 
+          <p>director, editor</p>
+    </div>
+    </div>-->
+    </div>
+    
+<div id="container_3">
+<span onclick="$('#about_nina').toggle();" style="cursor:pointer;"><div id="nina"><img src="img/nina.png"></div></span>
+<div id="about_nina" style="display: none"><h3><a href="http://www.ninamashurova.com" target="_blank">Nina Mashurova</a></h3><p>Internet presence, photos,</p><p>wordsmith, audio-aligner,</p><p>cinematographer</p></div>
+<!--<div id="nina" class="shadow">
+  <div class="face_3">
+      <img src="img/nina.png"></div>
+  <div class="face-back_3">
+      <h3><a href="http://ninamashurova.com/?page_id=260">Nina Mashurova</a></h3>
+          <p>internet presence,</p>
+          <p>hunter-gatherer,</p> 
+          <p>words, photos,</p>
+          <p>camera2</p>
+   </div>
+   </div>-->
+   </div>
+</div>
+<div id="thanks" style="position: relative;"><p>Endless thanks to <a href="http://castudi.journalism.cuny.edu/">Carla Astudillo</a> &amp; <a href="http://www.thecitylion.com/">Marie McGwier</a> for web development, <a href="https://www.facebook.com/THrecording">Miles Coe &amp; Jake Yuhas</a> for making things sound better, everyone who took time to speak with us and let us sleep on their floors and of course, our <a href="http://www.kickstarter.com/projects/folktofolk/folk-to-folk/backers">Kickstarter backers</a>.</p></div>
+</div>
+
+<!--<div id="container">
+      <div class="emma"> <img src="img/emma.png"></div>
+      <div class="andrew"> <img src="img/andrew.png"></div>
+      <div class="nina"> <img src="img/nina.png"></div>
+</div>
+<div>
+   <a onclick="document.getElementById('overlay').style.display='none'";
+      href="javascript:void(0)"</a><h2>[close]</h2>
+          </div>
+        </div>
+</div>-->
+</div>
+     
+<div id="content2">
+<div id="l-contain2">
+<div class="l-triangle-bottom2"></div>
+<div id="left_menu2">
+<a href="#" class="link_show">Show Menu</a>
+          </div>
+          </div>
+          </div>
+          
+<div id="content">
+<div id="l-contain">
+<div class="l-triangle-bottom"></div>
+<div id="left_menu">
+<a href="#" class="link_hide">Hide Menu</a>
+          </div>
+          </div>
+
+<div id="r-contain">
+<div class="r-triangle-bottom"></div>   
+<div id="right_menu">
+<a onclick="document.getElementById('overlay').style.display='block';document.getElementById('fade').style.display='block'" href="javascript:void(0)">About </a>
+<span class="divider">|</span> 
+<a href="http://www.folktofolk.tumblr.com" target="_blank">Blog </a> 
+<span class="divider">|</span> 
+<a href="http://www.facebook.com/folktofolk" target="_blank"><img src="img/facebook.png" target="_blank" border="0" /></a>      
+<a href="http://www.twitter.com/folktofolk" target="_blank"><img src="img/twitter.png" target="_blank" border="0" /></a>
+</div>
+</div>   
+          
+<div id="banner-contain">
+<div class="l-banner"><img src="img/banner_left"></div>
+<div class="r-banner"><img src="img/banner_right"></div>Folk to Folk
+       </div>
+        </div>
+      </div>
+    
+
+       <script src="js/leaflet.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script type="text/javascript" src="dist/cartodb-leaflet-min.js"></script>
+    <script type="text/javascript" src="dist/cartodb-popup-min.js"></script> 
+
+  </body>
+</html>
