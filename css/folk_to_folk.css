@@ -57,15 +57,16 @@ html, body {
 }
 
 #hoping-machine {
-  z-index: 500;
+  z-index: 1000;
   opacity: 1;
+  display: block;
+  content: none;
 }
 
-.seetrailer {
+.trailer {
   position: relative;
-  left: -1em;
-  top: 1em;
-  margin-right: -1.5em;
+  left: 30em;
+  top: 9em;
 }
 
 .l-banner {
