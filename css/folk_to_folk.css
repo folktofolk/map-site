@@ -56,6 +56,18 @@ html, body {
   content: none;
 }
 
+#hoping-machine {
+  z-index: 500;
+  opacity: 1;
+}
+
+.seetrailer {
+  position: relative;
+  left: -1em;
+  top: 1em;
+  margin-right: -1.5em;
+}
+
 .l-banner {
    float: left;
    position: relative;
