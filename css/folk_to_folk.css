@@ -36,6 +36,16 @@ html, body {
   opacity: 1;
   z-index: 2;
     }
+
+#content3 {
+  position: absolute;
+  width:100%;
+  top: 28em;
+  left: 10em;
+  opacity: 1;
+  z-index: 2;
+
+}
     
     
 #banner-contain {
@@ -64,9 +74,8 @@ html, body {
 }
 
 .trailer {
-  position: relative;
+  position: absolute;
   left: 30em;
-  top: 16em;
 }
 
 .l-banner {
